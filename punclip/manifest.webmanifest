@@ -1,0 +1,17 @@
+{
+  "name": "PunClip · ปั้นคลิป",
+  "short_name": "PunClip",
+  "description": "AI ปั้นคลิปดิบในมือถือให้เป็นคลิปแนวตั้งพร้อมโพสต์ ตัดได้ทุกแบบ",
+  "lang": "th",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0f1115",
+  "theme_color": "#0f1115",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0f1115" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="PunClip" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="icon" href="./icon-192.png" />
+  <link rel="apple-touch-icon" href="./icon-192.png" />
+  <title>PunClip · ปั้นคลิป</title>
+  <meta name="description" content="PunClip — AI ปั้นคลิปดิบในมือถือให้เป็นคลิปแนวตั้งพร้อมโพสต์ ตัดได้ทุกแบบ" />
+  <script type="module" crossorigin src="./assets/index-3ZzSOiVg.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-BgXGIWOT.css">
+</head>
+<body>
+  <header class="top">
+    <div class="brand"><img src="./icon-192.png" alt="" /><b>PunClip</b><span class="ver">ปั้นคลิป</span></div>
+    <button id="openSettings" class="icon-btn" aria-label="ตั้งค่า">⚙︎</button>
+  </header>
+
+  <main>
+    <section class="card" id="pickCard">
+      <h2>1. เลือกคลิป</h2>
+      <p class="hint">เลือกได้หลายคลิปจากแกลเลอรี หรือถ่ายใหม่ — คลิปอยู่ในเครื่องเท่านั้น ไม่อัปโหลดไปไหน (ยกเว้นภาพตัวอย่างที่ส่งให้ AI ดู)</p>
+      <label class="big-btn"><input id="files" type="file" accept="video/*" multiple hidden />＋ เลือกคลิป</label>
+      <ul id="clipList" class="clips"></ul>
+    </section>
+
+    <section class="card">
+      <h2>2. อยากได้คลิปแบบไหน</h2>
+      <textarea id="wish" rows="2" placeholder="ไม่ใส่ก็ได้ เช่น คลิปรีวิวคาเฟ่ เน้นบรรยากาศ · ไฮไลต์ลูกยิงประตู · วล็อกเที่ยวทะเล"></textarea>
+      <span class="label">เสียงในคลิป</span>
+      <div class="sounds" id="soundMode" role="radiogroup" aria-label="เสียงในคลิป">
+        <button data-v="clip" class="on" role="radio" aria-checked="true"><b>🎬 เสียงจากคลิป</b><small>ใช้เสียงจริงในวิดีโอ</small></button>
+        <button data-v="ai" role="radio" aria-checked="false"><b>✨ ให้ AI พากย์</b><small>AI เขียนสคริปต์แล้วพากย์ให้</small></button>
+        <button data-v="own" role="radio" aria-checked="false"><b>🎙️ พากย์เอง</b><small>อัดเสียงหรือเลือกไฟล์เสียง</small></button>
+      </div>
+      <div id="ownVoice" class="own" hidden>
+        <div class="actions">
+          <button type="button" id="recBtn" class="ghost-btn">🎙️ อัดเสียง</button>
+          <label class="ghost-btn"><input id="voiceFile" type="file" accept="audio/*" hidden />📁 เลือกไฟล์เสียง</label>
+        </div>
+        <p id="voiceInfo" class="hint">ยังไม่มีเสียง — คลิปจะยาวเท่าเสียงที่อัดหรือเลือก</p>
+        <audio id="voicePreview" controls hidden></audio>
+      </div>
+      <div class="row" id="lengthRow"><span class="label">ความยาว</span><div class="chips" id="lengths"></div></div>
+      <div class="row"><span class="label">ข้อความบนจอ</span>
+        <div class="seg" id="titleMode">
+          <button data-v="ai" class="on">AI คิดให้</button><button data-v="custom">พิมพ์เอง</button><button data-v="none">ไม่ใส่</button>
+        </div>
+      </div>
+      <div id="customTitle" hidden>
+        <input id="line1" maxlength="40" placeholder="บรรทัด 1 (สีเหลือง)" />
+        <input id="line2" maxlength="60" placeholder="บรรทัด 2 (สีขาว ไม่บังคับ)" />
+      </div>
+    </section>
+
+    <button id="go" class="go" disabled>✨ ให้ AI ตัดเลย</button>
+    <p id="goHint" class="hint center"></p>
+
+    <section class="card" id="progressCard" hidden>
+      <p id="stage" class="stage"></p>
+      <div class="bar"><span id="barFill"></span></div>
+    </section>
+
+    <section class="card" id="resultCard" hidden>
+      <h2>คลิปที่ได้</h2>
+      <video id="result" controls playsinline></video>
+      <div class="actions">
+        <button id="share" class="big-btn">แชร์ / บันทึกลงเครื่อง</button>
+        <a id="download" class="ghost-btn" download="punclip.mp4">ดาวน์โหลด</a>
+        <button id="again" class="ghost-btn">ตัดแบบใหม่</button>
+      </div>
+      <details><summary>ช็อตที่ AI เลือก</summary><ol id="shotList" class="shots"></ol></details>
+    </section>
+  </main>
+
+  <dialog id="settings">
+    <form method="dialog">
+      <h2>ตั้งค่า</h2>
+      <label>Gemini API key
+        <input id="key" type="password" autocomplete="off" placeholder="AIza…" />
+      </label>
+      <p class="hint">ขอ key ฟรีที่ <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a> · key เก็บไว้ในเครื่องนี้เท่านั้น ใช้เรียก Gemini ตรงจากมือถือ</p>
+      <div class="actions"><button value="save" class="big-btn">บันทึก</button></div>
+    </form>
+  </dialog>
+
+</body>
+</html>
